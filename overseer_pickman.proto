@@ -4,6 +4,9 @@ import "google/protobuf/descriptor.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/any.proto";
 
+option java_package = "org.neoscada.drivers";
+option java_outer_classname = "Generic";
+
 //	Submessages
 
 // Consider using int64 for timestamp

@@ -1,6 +1,6 @@
 version: v2
-name: buf.build/renatoexpert/neoscada
+managed:
+  enabled: true
 plugins:
-  - protoc_builtin: cpp
-    out: gen/cpp
-
+  - remote: buf.build/protocolbuffers/java:v28.2
+    out: gen
