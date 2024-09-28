@@ -1,0 +1,6 @@
+version: v2
+name: buf.build/renatoexpert/neoscada
+plugins:
+  - protoc_builtin: cpp
+    out: gen/cpp
+
