@@ -1,5 +1,14 @@
 syntax = "proto3";
 
+//	Services
+
+service Overseer_Pickman_Communication {
+	rpc Read(ReadDatapointRequest) returns (ReadDatapointsResponse);
+	rpc Write(WriteDatapointRequest) returns (WriteDatapointsResponse);
+	rpc Ping(CommunicationStatusRequest) returns (CommunicationStatusResponse);
+	rpc Scan(ScanPointsRequest) returns (ScanPointsResponse);
+}
+
 //	Request
 message CommunicationStatusRequest { }
 
