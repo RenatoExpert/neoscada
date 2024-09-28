@@ -1,0 +1,119 @@
+syntax = "proto3";
+
+//	Request
+message CommunicationStatusRequest { }
+
+message ReadDatapointsRequest {
+	repeated DatapointReference datapointReference = 1;
+}
+
+message WriteDatapointsRequest {
+	repeated DataFrame writeRequest = 1;
+}
+
+message ScanPointsRequest {
+	int64 responseLimit = 1;
+	optional int64 fromIndex = 2;
+	optional int64 toIndex = 3;
+}
+
+//	Responses
+
+message CommunicationStatusResponse {
+	ConnectionStatus connectionStatus = 1;
+	ResourcesUsage PickemanResources = 2;
+	ResourcesUsage FieldgatewayResources = 3;
+}
+
+message ReadDatapointsResponse {
+	repeated DataFrame results = 1;
+}
+
+message WriteDatapointsResponse {
+	repeated WriteOperationReport report = 1;
+	message WriteOperationReport {
+		OperationExitCode exitCode = 1;
+		optional DataFrame result = 2;
+	}
+}
+
+message ScanPointsResponse {
+	int64 responseCount = 1;
+	repeated DatapointReference results = 2;
+}
+
+//	Submessages
+
+// Consider using int64 for timestamp
+// https://stackoverflow.com/questions/3574716/date-and-time-type-for-use-with-protobuf
+
+message ResourcesUsage {
+	ResourceUsage cpu = 1;
+	ResourceUsage memory = 2;
+}
+
+message ResourceUsage {
+	int64 inUse = 1;
+	int64 available = 2;
+}
+
+message ConnectionStatus {
+	TCPExit connectionExitCode = 1;
+	google.protobuf.Timestamp latency = 2;
+	google.protobuf.Timestamp hostUptime = 3;
+	optional string FieldgatewayErrorMessage = 4;
+}
+
+// Import TCPIP Eval From these 
+// https://www.ibm.com/docs/en/db2/11.1?topic=message-tcpip-errors
+
+enum TCPExit {
+	option allow_alias = true;
+	SUCCESS = 0;
+	ETIMEDOUT = 1;
+	ECONNREFUSED = 2;
+	EHOSTDOWN = 3;
+	DIFFERENT_ERROR = 4;
+}
+
+/*
+	DatapointReference has a different implementation for each protocol, like
+	// File protos/opcua.proto
+	import "protos/global.proto";
+	package opcua;
+	extend DatapointReference {
+		optional int32 namespace = 1;
+		oneof nodeId {
+			int32 int = 2;
+			string str = 3;
+			string guid = 4;
+			string base64 = 5;
+		}
+	}
+	protobuf.dev/programming-guides/proto2/#ext-example
+*/
+
+message DatapointReference {
+	ValueType DatapointType = 1;
+}
+
+enum ValueType {
+	option allow_alias = true;
+	BOOL = 0;
+	INT32 = 1;
+	INT64 = 2;
+	// finish it later
+}
+
+message DataFrame {
+	DatapointReference reference = 1;
+	google.protobuf.Timestamp timestamp = 2;
+	google.protobuf.Any value = 3;
+}
+
+message OperationExitCode {
+	/*
+		Make it based on crud/http requests
+		https://www.moesif.com/blog/technical/api-design/Which-HTTP-Status-Code-To-Use-For-Every-CRUD-App/
+	*/
+}
